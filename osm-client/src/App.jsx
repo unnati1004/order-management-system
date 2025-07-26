@@ -8,12 +8,13 @@ import CustomerForm from './pages/CustomerForm';
 import CustomerList from './pages/CustomerList';
 import ProductList from './pages/ProductList';
 import OrderForm from './pages/OrderForm';
+import Navbar from './components/Navbar';
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
+        <Navbar/>
         <main className="pt-20 px-4">
           <Routes>
             <Route path="/" element={<Dashboard />} />
