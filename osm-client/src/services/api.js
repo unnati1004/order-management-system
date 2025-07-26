@@ -1,14 +1,25 @@
 const BASE_URL = 'http://localhost:5000/api';
 
+// Orders
 export async function createOrder(order) {
-  const res = await fetch(`${BASE_URL}/orders`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(order),
-  });
-  console.log("frontend",res);
-  
-  return res.json();
+  try {
+    const res = await fetch(`${BASE_URL}/orders`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(order),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || 'Failed to create order');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Order creation failed:', error.message);
+    throw error;
+  }
 }
 
 export async function getOrderById(id) {
@@ -30,6 +41,7 @@ export async function getAllOrders() {
   return res.json();
 }
 
+// Customers
 export async function createCustomer(customer) {
   const res = await fetch(`${BASE_URL}/customers`, {
     method: 'POST',
@@ -44,8 +56,17 @@ export async function getAllCustomers() {
   return res.json();
 }
 
-export const createCustomer = (data) => API.post('/customers', data);
-export const getCustomers = () => API.get('/customers');
+// Products
+export async function createProduct(product) {
+  const res = await fetch(`${BASE_URL}/products`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(product),
+  });
+  return res.json();
+}
 
-export const createProduct = (data) => API.post('/products', data);
-export const getProducts = () => API.get('/products');
+export async function getAllProducts() {
+  const res = await fetch(`${BASE_URL}/products`);
+  return res.json();
+}
