@@ -1,5 +1,6 @@
 
 // import './App.css'
+import AdminDashboard from './pages/AdminDashboard'
 import CustomerForm from './pages/CustomerForm'
 import OrderForm from './pages/OrderForm'
 import OrderLookup from './pages/OrderLookup'
@@ -12,7 +13,8 @@ function App() {
       {/* <OrderForm /> */}
       {/* <OrderLookup /> */}
       {/* <ProductForm /> */}
-      <CustomerForm/>
+      {/* <CustomerForm/> */}
+      <AdminDashboard />
     </div>
   )
 }
