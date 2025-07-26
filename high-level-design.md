@@ -41,41 +41,24 @@ sequenceDiagram
   WebSocket-->>Client: Update order status on UI
 
 ---
+🧩 2. Component Breakdown
+🔸 Frontend
+Pages: /orders, /products, /customers
 
- ## 2. Component Breakdown
-Frontend
-Pages
+Shared Components: OrderTable, FilterBar, StatusBadge
 
-/orders: Lists all orders
+State Management: React Context + useReducer (or Redux Toolkit)
 
-/products: Lists products
+🔸 Backend (API Layer)
+routes: Define endpoints /api/orders, /api/products
 
-/customers: Manage customer data
+controllers: Validate input, call services
 
-Shared Components
+services: Business logic like status transitions
 
-OrderTable
-
-FilterBar
-
-StatusBadge
-
-State Management
-
-React Context + useReducer
-
-Optional Redux Toolkit (for scaling)
-
-API Layer
-routes: Define endpoints (/api/orders, /api/products)
-
-controllers: Handle validation and service orchestration
-
-services: Perform business logic (e.g., validate transitions)
-
-data-access: Abstract DB operations using models or ORM
+data-access: DB interaction (ORM or raw queries)
  ---
- ## 3. Database Schema (ER Diagram)
+🗂 3. Database Schema (ER Diagram)
 erDiagram
   USERS ||--o{ ORDERS : places
   PRODUCTS ||--o{ ORDER_ITEMS : includes
@@ -106,16 +89,13 @@ erDiagram
     uuid product_id FK
     integer quantity
   }
- 
- ---
 
-### Indexing Strategy:
+🧠 Indexing Strategy
+Composite index on (order_id, product_id) in ORDER_ITEMS
 
-Composite index on order_id + product_id in ORDER_ITEMS
+Index status on ORDERS for filtering
 
-Index status on ORDERS for faster filtering
-
-Index user_id on ORDERS for dashboard use
+Index user_id on ORDERS for dashboard
 
 ###4. API Contract
 
@@ -126,7 +106,9 @@ Index user_id on ORDERS for dashboard use
 | `/api/products`   | GET    | —                    | `200 OK: Product[]`     | `500 Internal Server` |
 | `/api/customers`  | GET    | —                    | `200 OK: User[]`        | `500 Internal Server` |
 
-###5. Sequence Diagram: “Place Order”
+🔄 5. Sequence Diagram: “Place Order”
+
+mermaid
 
 sequenceDiagram
   participant Client
@@ -141,40 +123,38 @@ sequenceDiagram
   Socket-->>Client: UI receives order update
 
 
-###6. Deployment Topology
+🚀 6. Deployment Topology
 
-| Service    | Platform               | Notes                          |
-| ---------- | ---------------------- | ------------------------------ |
-| Frontend   | Vercel / Netlify       | Auto-deploy on `main` push     |
-| API Server | Render / Railway       | Fastify/Express backend        |
-| DB         | Supabase / PlanetScale | Hosted PostgreSQL or MongoDB   |
-| Realtime   | Built-in via Socket.IO | Socket server in same Node app |
+| **Service** | **Platform**           | **Notes**                   |
+| ----------- | ---------------------- | --------------------------- |
+| Frontend    | Vercel / Netlify       | Auto-deploy on `main` push  |
+| API Server  | Render / Railway       | Fastify/Express backend     |
+| Database    | Supabase / PlanetScale | Hosted PostgreSQL / MongoDB |
+| WebSocket   | Same Node server       | Built-in via Socket.IO      |
 
-Environment Management
+
+📁 Environment Management
 Use .env files for all sensitive keys
 
 Vercel & Render auto-manage secrets
 
-CI/CD
+🔁 CI/CD Pipeline
 GitHub Actions: run tests → lint → deploy
 
 Vercel auto-preview deploys for PRs
 
-###7. Security & Observability
-Authentication & Authorization
-NextAuth with JWT strategy
+🔐 7. Security & Observability
+🛡 Authentication & Access Control
+-Auth: NextAuth + JWT
+-RBAC:
+    - Admin: full access
+    - Customer: view only
 
-Role-based Access Control:
+🔎 Observability
 
-Admin: Can create/update/delete
+| **Concern**     | **Tool**            |
+| --------------- | ------------------- |
+| Logging         | `pino` logger       |
+| Health Check    | `/healthz` endpoint |
+| Error Reporting | Sentry / LogRocket  |
 
-Customer: View only
-
-##Observability Tools
-
-| Concern         | Tool               |
-| --------------- | ------------------ |
-| Logging         | `pino` logger      |
-| Healthcheck     | `/healthz` route   |
-| Error Reporting | Sentry / LogRocket |
-```
