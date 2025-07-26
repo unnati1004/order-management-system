@@ -43,3 +43,9 @@ export async function getAllCustomers() {
   const res = await fetch(`${BASE_URL}/customers`);
   return res.json();
 }
+
+export const createCustomer = (data) => API.post('/customers', data);
+export const getCustomers = () => API.get('/customers');
+
+export const createProduct = (data) => API.post('/products', data);
+export const getProducts = () => API.get('/products');
