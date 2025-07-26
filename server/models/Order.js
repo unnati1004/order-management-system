@@ -1,11 +1,20 @@
-const mongoose = require('mongoose');
+// models/Order.js
+import mongoose from 'mongoose';
 
-const OrderSchema = new mongoose.Schema({
-  customerId: String,
-  products: [{ productId: String, quantity: Number }],
-  status: { type: String, enum: ['PENDING', 'PAID', 'FULFILLED', 'CANCELLED'], default: 'PENDING' },
-  paymentReceived: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now },
+const orderItemSchema = new mongoose.Schema({
+  productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+  quantity: Number,
+  priceAtPurchase: Number,
 });
 
-module.exports = mongoose.model('Order', OrderSchema);
+const orderSchema = new mongoose.Schema({
+  customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  status: {
+    type: String,
+    enum: ['PENDING', 'PAID', 'FULFILLED', 'CANCELLED'],
+    default: 'PENDING'
+  },
+  products: [orderItemSchema],
+}, { timestamps: true });
+
+export default mongoose.model('Order', orderSchema);
