@@ -2,10 +2,21 @@ const Order = require('../models/Order');
 
 module.exports = async function (fastify, opts) {
   fastify.post('/api/orders', async (req, reply) => {
+    const { customerId, products } = req.body;
+
+    const existingOrder = await Order.findOne({
+      customerId,
+      products: { $all: products.map(p => ({ productId: p.productId, quantity: p.quantity })) },
+    });
+
+    if (existingOrder) {
+      return reply
+        .code(400)
+        .send({ error: 'Duplicate order detected. Same order already exists.' });
+    }
+
     const newOrder = new Order(req.body);
     const saved = await newOrder.save();
-    console.log("Order created:", saved);
-    
     reply.send(saved);
   });
 
