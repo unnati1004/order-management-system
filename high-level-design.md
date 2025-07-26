@@ -40,7 +40,9 @@ sequenceDiagram
   API_Server->>WebSocket: Emit "orderStatusUpdated"
   WebSocket-->>Client: Update order status on UI
 
-2. Component Breakdown
+---
+
+ ## 2. Component Breakdown
 Frontend
 Pages
 
@@ -72,8 +74,8 @@ controllers: Handle validation and service orchestration
 services: Perform business logic (e.g., validate transitions)
 
 data-access: Abstract DB operations using models or ORM
-
-3. Database Schema (ER Diagram)
+ ---
+ ## 3. Database Schema (ER Diagram)
 erDiagram
   USERS ||--o{ ORDERS : places
   PRODUCTS ||--o{ ORDER_ITEMS : includes
@@ -104,8 +106,10 @@ erDiagram
     uuid product_id FK
     integer quantity
   }
+ 
+ ---
 
-Indexing Strategy:
+### Indexing Strategy:
 
 Composite index on order_id + product_id in ORDER_ITEMS
 
@@ -113,7 +117,7 @@ Index status on ORDERS for faster filtering
 
 Index user_id on ORDERS for dashboard use
 
-4. API Contract
+###4. API Contract
 
 | Endpoint          | Method | Request Body         | Success Response        | Error Cases           |
 | ----------------- | ------ | -------------------- | ----------------------- | --------------------- |
@@ -122,7 +126,7 @@ Index user_id on ORDERS for dashboard use
 | `/api/products`   | GET    | —                    | `200 OK: Product[]`     | `500 Internal Server` |
 | `/api/customers`  | GET    | —                    | `200 OK: User[]`        | `500 Internal Server` |
 
-5. Sequence Diagram: “Place Order”
+###5. Sequence Diagram: “Place Order”
 
 sequenceDiagram
   participant Client
@@ -137,7 +141,7 @@ sequenceDiagram
   Socket-->>Client: UI receives order update
 
 
-6. Deployment Topology
+###6. Deployment Topology
 
 | Service    | Platform               | Notes                          |
 | ---------- | ---------------------- | ------------------------------ |
@@ -156,7 +160,7 @@ GitHub Actions: run tests → lint → deploy
 
 Vercel auto-preview deploys for PRs
 
-7. Security & Observability
+###7. Security & Observability
 Authentication & Authorization
 NextAuth with JWT strategy
 
@@ -166,7 +170,7 @@ Admin: Can create/update/delete
 
 Customer: View only
 
-Observability Tools
+##Observability Tools
 
 | Concern         | Tool               |
 | --------------- | ------------------ |
