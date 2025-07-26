@@ -29,3 +29,17 @@ export async function getAllOrders() {
   const res = await fetch(`${BASE_URL}/orders`);
   return res.json();
 }
+
+export async function createCustomer(customer) {
+  const res = await fetch(`${BASE_URL}/customers`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(customer),
+  });
+  return res.json();
+}
+
+export async function getAllCustomers() {
+  const res = await fetch(`${BASE_URL}/customers`);
+  return res.json();
+}
