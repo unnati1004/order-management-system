@@ -1,39 +1,38 @@
-// src/pages/CustomerList.jsx
+// src/pages/ProductList.jsx
 import React, { useEffect, useState } from 'react';
-import { getAllCustomers } from '../services/api';
+import { getAllProducts } from '../services/api';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 
-const CustomerList = () => {
-  const [customers, setCustomers] = useState([]);
+const ProductList = () => {
+  const [products, setProducts] = useState([]);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    async function fetchCustomers() {
+    async function fetchProducts() {
       try {
-        const data = await getAllCustomers();
-        setCustomers(data);
+        const data = await getAllProducts();
+        setProducts(data);
       } catch (err) {
-        console.error('Failed to fetch customers:', err);
+        console.error('Failed to fetch products:', err);
       }
     }
 
-    fetchCustomers();
+    fetchProducts();
   }, []);
 
-  const filtered = customers.filter(c =>
-    c.name.toLowerCase().includes(search.toLowerCase()) ||
-    c.email?.toLowerCase().includes(search.toLowerCase())
+  const filtered = products.filter((product) =>
+    product.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <div className="max-w-6xl mx-auto mt-10">
       <Card className="shadow-xl">
         <CardContent className="p-6">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">👥 Customer List</h2>
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">📦 Product List</h2>
 
           <Input
-            placeholder="Search by name or email..."
+            placeholder="Search by product name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="mb-4"
@@ -44,21 +43,23 @@ const CustomerList = () => {
               <thead className="bg-gray-100">
                 <tr className="text-left">
                   <th className="px-4 py-2">Name</th>
-                  <th className="px-4 py-2">Email</th>
-                  <th className="px-4 py-2">Phone</th>
+                  <th className="px-4 py-2">SKU</th>
+                  <th className="px-4 py-2">Price</th>
+                  <th className="px-4 py-2">Stock</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan="3" className="text-center p-4 text-gray-400">No customers found</td>
+                    <td colSpan="4" className="text-center p-4 text-gray-400">No products found</td>
                   </tr>
                 ) : (
-                  filtered.map((customer) => (
-                    <tr key={customer._id} className="border-t hover:bg-gray-50">
-                      <td className="px-4 py-2">{customer.name}</td>
-                      <td className="px-4 py-2">{customer.email}</td>
-                      <td className="px-4 py-2">{customer.phone}</td>
+                  filtered.map((product) => (
+                    <tr key={product._id} className="border-t hover:bg-gray-50">
+                      <td className="px-4 py-2">{product.name}</td>
+                      <td className="px-4 py-2">{product.sku}</td>
+                      <td className="px-4 py-2">${product.price}</td>
+                      <td className="px-4 py-2">{product.stock}</td>
                     </tr>
                   ))
                 )}
@@ -71,4 +72,4 @@ const CustomerList = () => {
   );
 };
 
-export default CustomerList;
+export default ProductList;
