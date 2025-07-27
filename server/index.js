@@ -10,7 +10,7 @@ require('dotenv').config();
 const orderRoutes = require('./routes/orderRoutes');
 const customerRoutes = require('./routes/customerRoutes');
 const productRoutes = require('./routes/productRoutes');
-
+const authRoutes = require('./routes/authRoutes');
 // Import middleware
 const { authenticate, authorizeRoles } = require('./middlewares/auth');
 
@@ -48,7 +48,7 @@ const startServer = async () => {
   fastify.register(orderRoutes);
   fastify.register(customerRoutes);
   fastify.register(productRoutes);
-
+  fastify.register(authRoutes);
   // WebSocket connection
   fastify.ready().then(() => {
     fastify.io.on('connection', (socket) => {
