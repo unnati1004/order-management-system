@@ -1,5 +1,6 @@
     //  const BASE_URL = 'http://localhost:5000/api';
     // const BASE_URL = import.meta.env.BASE_URL;
+console.log('import.meta.env.BASE_URL', import.meta.env.BASE_URL);
 
 export async function loginUser(credentials) {
   const res = await fetch(`${import.meta.env.BASE_URL}/auth/login`, {
