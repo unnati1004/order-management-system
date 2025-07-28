@@ -32,14 +32,14 @@ export default function Navbar() {
             <Link to="/trackorder">Track Order</Link>
           </>
          )} 
-         {user?.role === 'customer' && (
+         {/* {user?.role === 'customer' && (
           <>
-            {/* <Link to="/place-order">Place Order</Link> */}
+            <Link to="/place-order">Place Order</Link>
             <Link to="/my-orders">
             <FaShoppingCart/> 
             </Link>
           </>
-        )}
+        )} */}
       </div>
 
       {user ? (
