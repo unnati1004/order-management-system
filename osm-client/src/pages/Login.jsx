@@ -9,7 +9,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   // Debugging line to check the BASE_URL
-  // console.log('import.meta.env.BASE_URL', import.meta.env.BASE_URL); // Debugging line to check the BASE_URL
+  console.log('import.meta.env.BASE_URL', import.meta.env.VITE_API_URL); // Debugging line to check the BASE_URL
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
