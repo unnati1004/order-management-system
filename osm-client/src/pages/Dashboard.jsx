@@ -17,7 +17,7 @@ const CustomerDashboard = () => {
 
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`${import.meta.env.BASE_URL}/api/products`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products`);
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || "Failed to load products");
 

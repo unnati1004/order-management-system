@@ -1,12 +1,12 @@
 // socket.js
 
 import { io } from "socket.io-client";
-const BASE_URL = import.meta.env.BASE_URL;
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 let socket = null;
 
 export const createSocket = () => {
   if (!socket || socket.disconnected) {
-    socket = io(`${BASE_URL}`, {
+    socket = io(`${VITE_API_URL}`, {
       transports: ["websocket"], // optional but recommended
     });
   }

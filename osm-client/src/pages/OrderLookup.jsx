@@ -14,7 +14,7 @@ function OrderLookup() {
 
   const fetchOrder = async () => {
     try {
-      const res = await axios.get(`import.meta.env.BASE_URL/api/orders/${orderId}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders/${orderId}`);
       setOrder(res.data);
     } catch (err) {
       alert("Order not found.");
