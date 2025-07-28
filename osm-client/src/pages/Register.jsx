@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+
 const RegisterForm = () => {
   const [form, setForm] = useState({
     name: "",
@@ -13,18 +14,41 @@ const RegisterForm = () => {
     password: "",
     role: "customer",
   });
-  const [message, setMessage] = useState("");
-  // Inside RegisterForm component:
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const validate = () => {
+    if (!form.name || !form.email || !form.password) {
+      return "All fields are required";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      return "Invalid email format";
+    }
+    if (form.password.length < 6) {
+      return "Password must be at least 6 characters";
+    }
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage('');
+    setError('');
+
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     const res = await createUser(form);
-    console.log("client response", res);
-    if (res.error) setMessage(res.error);
+    if (res.error) setError(res.error);
     else setMessage("🎉 User registered successfully!");
   };
 
@@ -90,23 +114,16 @@ const RegisterForm = () => {
                 <option value="admin">Admin</option>
               </select>
             </div>
-            <Button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700"
-            >
+
+            {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+            {message && <p className="text-green-600 text-sm text-center">{message}</p>}
+
+            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
               Register
             </Button>
-            {message && (
-              <p className="text-sm text-center text-green-600 mt-2">
-                {message}
-              </p>
-            )}
             <p className="text-sm text-center text-gray-600 mt-4">
               Already have an account?{" "}
-              <Link
-                to="/login"
-                className="text-blue-600 font-medium hover:underline"
-              >
+              <Link to="/login" className="text-blue-600 font-medium hover:underline">
                 Login here
               </Link>
             </p>

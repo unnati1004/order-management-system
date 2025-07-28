@@ -7,22 +7,32 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const { login, user } = useAuth();
   const navigate = useNavigate();
-  // console.log(user);
-  
+
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
+    // ✅ Basic validation
+    if (!form.email || !form.password) {
+      return setError('Email and password are required');
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      return setError('Invalid email format');
+    }
+
     try {
       await login(form);
-      if (user?.role === 'admin') {  
-      navigate('/admin-dashboard');
-      } else{
-        navigate('/');  
+      if (user?.role === 'admin') {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/');
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Login failed');
     }
   };
 
@@ -45,7 +55,7 @@ export default function LoginPage() {
           onChange={handleChange}
           className="w-full p-2 border rounded"
         />
-        {error && <p className="text-red-600">{error}</p>}
+        {error && <p className="text-red-600 text-sm">{error}</p>}
         <button type="submit" className="bg-blue-600 text-white w-full py-2 rounded">
           Login
         </button>

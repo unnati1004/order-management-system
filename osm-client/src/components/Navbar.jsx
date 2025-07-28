@@ -34,8 +34,10 @@ export default function Navbar() {
          )} 
          {user?.role === 'customer' && (
           <>
-            <Link to="/place-order">Place Order</Link>
-            <Link to="/my-orders">My Orders</Link>
+            {/* <Link to="/place-order">Place Order</Link> */}
+            <Link to="/my-orders">
+            <FaShoppingCart/> 
+            </Link>
           </>
         )}
       </div>

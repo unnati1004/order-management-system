@@ -17,6 +17,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './routes/protectedRoutes';
 // import MyOrders from './pages/MyOrders';
 import TrackOrder from './pages/TrackOrder';
+import MyOrders from './pages/MyOrders';
 
 function App() {
   return (
@@ -32,7 +33,7 @@ function App() {
 
               {/* Protected Routes */}
               <Route
-                path="/admin-dashboard"
+                path="/admin-dashboard" role="admin"
                 element={
                   <ProtectedRoute>
                     <AdminDashboard />
@@ -71,6 +72,14 @@ function App() {
                   // </ProtectedRoute>
                 }
               />
+              {/* <Route
+                path="/my-orders"
+                element={
+                  <ProtectedRoute>
+                    <MyOrders/>
+                   </ProtectedRoute> 
+                }
+              /> */}
               <Route
                 path="/add-product"
                 element={
