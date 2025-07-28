@@ -8,7 +8,6 @@ const statusTransitions = {
 module.exports = async function (fastify, opts) {
   fastify.post("/api/orders", async (req, reply) => {
     const { customerId, products } = req.body;
-    console.log("Creating order with data:", req.body);
     
     const existingOrder = await Order.findOne({
       customerId,

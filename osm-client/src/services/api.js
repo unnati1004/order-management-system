@@ -10,7 +10,6 @@ export async function createOrder(order) {
     });
 
     const data = await res.json();
-    console.log("Order creation response:", data);
     
     if (!res.ok) {
       throw new Error(data.message || 'Failed to create order');
@@ -71,7 +70,7 @@ export async function createProduct(product) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(product),
     });
-    console.log(" sending to backend:", product); // ✅ LOG
+    // console.log(" sending to backend:", product); // ✅ LOG
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'Product creation failed');
     return data;
