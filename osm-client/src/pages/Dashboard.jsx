@@ -8,6 +8,7 @@ const CustomerDashboard = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { user } = useAuth();
+
   useEffect(() => {
     // const user = JSON.parse(localStorage.getItem("user"));
     if (!user || user.role !== "customer") {
@@ -29,6 +30,30 @@ const CustomerDashboard = () => {
 
     fetchProducts();
   }, [navigate]);
+  const handlePlaceOrder = async (productId) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`, // if using JWT auth
+        },
+        body: JSON.stringify({
+          customerId: user.id, // assuming your AuthContext provides the logged-in user's _id
+          products: [{ productId, quantity: 1 }],
+        }),
+      });
+
+      const data = await res.json();
+      console.log("Order response:", data);
+      if (!res.ok) throw new Error(data.message || "Failed to place order");
+
+      alert("✅ Order placed successfully!");
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
@@ -42,8 +67,12 @@ const CustomerDashboard = () => {
             className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-lg transition duration-300 flex flex-col justify-between"
           >
             <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">{product.name}</h3>
-              <p className="text-indigo-600 font-medium mb-1">Price: ₹{product.price}</p>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+                {product.name}
+              </h3>
+              <p className="text-indigo-600 font-medium mb-1">
+                Price: ₹{product.price}
+              </p>
               <p className="text-gray-500 text-sm line-clamp-3">
                 {product.description || "No description available."}
               </p>
@@ -51,7 +80,7 @@ const CustomerDashboard = () => {
             <div className="mt-4">
               <Button
                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
-                onClick={() => navigate("/place-order", { state: { productId: product._id } })}
+                onClick={() => handlePlaceOrder(product._id)}
               >
                 Place Order
               </Button>
