@@ -5,8 +5,10 @@ const User = require('../models/User');
 module.exports = async function (fastify) {
   // Register a new user
   fastify.post('/api/auth/register', async (req, reply) => {
+    
     try {
       const { email, name, password, role } = req.body;
+      // console.log("backend req", req.body);
 
       const existing = await User.findOne({ email });
       if (existing) {
@@ -14,8 +16,11 @@ module.exports = async function (fastify) {
       }
 
       const user = new User({ email, name, password, role });
+      // console.log("backend user",user);
+      
       const saved = await user.save();
-
+      // console.log("backend saved",saved);
+      
       reply.send({ message: 'User created', user: { id: saved._id, email: saved.email, role: saved.role } });
     } catch (err) {
       reply.code(500).send({ error: err.message });

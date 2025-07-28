@@ -8,7 +8,8 @@ const statusTransitions = {
 module.exports = async function (fastify, opts) {
   fastify.post("/api/orders", async (req, reply) => {
     const { customerId, products } = req.body;
-
+    console.log("Creating order with data:", req.body);
+    
     const existingOrder = await Order.findOne({
       customerId,
       products: {
@@ -41,6 +42,8 @@ fastify.put("/api/orders/:id/status", async (req, reply) => {
   const { id } = req.params;
   const { status } = req.body;
 
+  console.log("Updating order status:", id, status);
+
   const order = await Order.findById(id);
   if (!order) return reply.code(404).send({ error: "Order not found" });
 
@@ -52,16 +55,28 @@ fastify.put("/api/orders/:id/status", async (req, reply) => {
   }
 
   order.status = status;
-  await order.save();
 
-  // Notify clients via WebSocket
-  fastify.io.emit('orderStatusUpdated', { id, status });
-
-  reply.send(order);
+  try {
+    const saved = await order.save(); // ✅ capture result
+    console.log("orderroutes saved",saved);
+    
+    fastify.io.emit('orderStatusUpdated', { id, status });
+    reply.send(saved);
+  } catch (err) {
+    console.error("Failed to save order:", err);
+    reply.code(500).send({ error: "Internal Server Error", message: err.message });
+  }
 });
 
-  fastify.get("/api/orders", async (req, reply) => {
+
+fastify.get("/api/orders", async (req, reply) => {
+  try {
     const orders = await Order.find();
     reply.send(orders);
-  });
+  } catch (err) {
+    console.error("Error fetching orders:", err.message);
+    reply.code(500).send({ error: "Failed to fetch orders" });
+  }
+});
+
 };

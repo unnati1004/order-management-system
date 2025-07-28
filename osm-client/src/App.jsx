@@ -15,6 +15,8 @@ import NotFound from './pages/NotFound';
 import Navbar from './components/Navbar';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './routes/protectedRoutes';
+// import MyOrders from './pages/MyOrders';
+import TrackOrder from './pages/TrackOrder';
 
 function App() {
   return (
@@ -32,9 +34,9 @@ function App() {
               <Route
                 path="/admin-dashboard"
                 element={
-                  <ProtectedRoute role="admin">
+                  <ProtectedRoute>
                     <AdminDashboard />
-                  </ProtectedRoute>
+                   </ProtectedRoute>
                 }
               />
               <Route
@@ -48,49 +50,55 @@ function App() {
               <Route
                 path="/orders"
                 element={
-                  <ProtectedRoute>
+                  // <ProtectedRoute>
                     <OrderList />
-                  </ProtectedRoute>
+                  // </ProtectedRoute>
                 }
               />
               <Route
-                path="/orders/new"
+                path="/create-order"
                 element={
-                  <ProtectedRoute>
+                  // <ProtectedRoute>
                     <OrderForm />
-                  </ProtectedRoute>
+                  // </ProtectedRoute>
                 }
               />
               <Route
                 path="/products"
                 element={
-                  <ProtectedRoute>
+                  // <ProtectedRoute>
                     <ProductList />
-                  </ProtectedRoute>
+                  // </ProtectedRoute>
                 }
               />
               <Route
-                path="/products/new"
+                path="/add-product"
                 element={
-                  <ProtectedRoute>
+                  // <ProtectedRoute>
                     <ProductForm />
-                  </ProtectedRoute>
+                  // </ProtectedRoute> 
                 }
               />
               <Route
                 path="/customers"
                 element={
-                  <ProtectedRoute>
+                  // <ProtectedRoute>
                     <CustomerList />
-                  </ProtectedRoute>
+                  // </ProtectedRoute>
                 }
               />
               <Route
                 path="/customers/new"
                 element={
-                  <ProtectedRoute>
+                  // <Protec>
                     <CustomerForm />
-                  </ProtectedRoute>
+                  // </Protec tedRoute> */}
+                }
+              />
+              <Route
+                path="/trackorder"
+                element={
+                    <TrackOrder />
                 }
               />
 
@@ -100,7 +108,7 @@ function App() {
           </main>
         </div>
       </Router>
-    </AuthProvider>
+   </AuthProvider>
   );
 }
 

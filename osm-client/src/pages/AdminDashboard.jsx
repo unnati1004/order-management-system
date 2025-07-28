@@ -1,120 +1,130 @@
 import React, { useEffect, useState } from 'react';
-import { Input } from '@/components/ui/input';
+import { getAllOrders, getAllProducts, getAllCustomers } from '@/services/api';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, Search } from 'lucide-react';
-import { getAllOrders } from '@/services/api';
+import { BarChart, User, Package } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import Papa from 'papaparse';
 
-function AdminDashboard() {
+export default function Dashboard() {
   const [orders, setOrders] = useState([]);
-  const [filtered, setFiltered] = useState([]);
-  const [search, setSearch] = useState('');
+  const [products, setProducts] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchOrders();
+    async function fetchData() {
+      const [o, p, c] = await Promise.all([
+        getAllOrders(),
+        getAllProducts(),
+        getAllCustomers(),
+      ]);
+      setOrders(o);
+      setProducts(p);
+      setCustomers(c);
+    }
+    fetchData();
   }, []);
 
-  const fetchOrders = async () => {
-    try {
-      const data = await getAllOrders() // replace with your endpoint
-     //  const data = await res.json();/
-      console.log(data);
-      
-      setOrders(data);
-      setFiltered(data);
-    } catch (error) {
-      console.error('Error fetching orders:', error);
-    }
-  };
+  const filteredOrders = orders
+    .filter((o) =>
+      o.customerId?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .slice(-5)
+    .reverse();
 
-  const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearch(query);
-    const filteredOrders = orders.filter(order =>
-      order.customerName.toLowerCase().includes(query) ||
-      order.id.toLowerCase().includes(query)
-    );
-    setFiltered(filteredOrders);
-  };
-
-  const exportCSV = () => {
-    const header = ['Order ID', 'Customer Name', 'Status', 'Total'];
-    const rows = filtered.map(order => [
-      order.id,
-      order.customerName,
-      order.status,
-      order.total
-    ]);
-
-    const csv = [header, ...rows]
-      .map(row => row.map(cell => `"${cell}"`).join(','))
-      .join('\n');
-
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-
+  const handleExport = () => {
+    const csv = Papa.unparse(orders);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
-    link.href = url;
+    link.href = URL.createObjectURL(blob);
     link.download = 'orders.csv';
     link.click();
   };
 
   return (
-    <div className="max-w-6xl mx-auto mt-10 p-8 bg-gradient-to-br from-white via-slate-50 to-slate-100 rounded-2xl shadow-xl">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">📦 Admin Orders Dashboard</h1>
+    <div className="max-w-7xl mx-auto p-8">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">📊 Admin Dashboard</h1>
 
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
-        <div className="relative w-full md:w-2/3">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <Input
-            type="text"
-            value={search}
-            onChange={handleSearch}
-            placeholder="Search by name or order ID..."
-            className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-        <Button
-          variant="outline"
-          onClick={exportCSV}
-          className="flex items-center gap-2 text-indigo-600 hover:bg-indigo-50"
-        >
-          <Download size={16} />
-          Export CSV
-        </Button>
+      {/* Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+        <Card className="shadow-md">
+          <CardContent className="flex flex-col items-center p-6 text-center">
+            <BarChart size={32} className="text-indigo-500 mb-2" />
+            <h2 className="text-lg font-semibold">Orders</h2>
+            <p className="text-2xl font-bold">{orders.length}</p>
+            <Button variant="link" onClick={() => navigate('/orders')}>View Orders</Button>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-md">
+          <CardContent className="flex flex-col items-center p-6 text-center">
+            <Package size={32} className="text-green-500 mb-2" />
+            <h2 className="text-lg font-semibold">Products</h2>
+            <p className="text-2xl font-bold">{products.length}</p>
+            <Button variant="link" onClick={() => navigate('/products')}>View Products</Button>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-md">
+          <CardContent className="flex flex-col items-center p-6 text-center">
+            <User size={32} className="text-orange-500 mb-2" />
+            <h2 className="text-lg font-semibold">Customers</h2>
+            <p className="text-2xl font-bold">{customers.length}</p>
+            <Button variant="link" onClick={() => navigate('/customers')}>View Customers</Button>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-        <table className="w-full text-sm text-left text-gray-700">
-          <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
-            <tr>
-              <th className="px-6 py-3">Order ID</th>
-              <th className="px-6 py-3">Customer</th>
-              <th className="px-6 py-3">Status</th>
-              <th className="px-6 py-3">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 ? (
+      {/* Latest Orders */}
+      <div className="mt-10">
+        <h2 className="text-xl font-semibold mb-4">🕑 Recent Orders</h2>
+
+        <div className="flex items-center justify-between mb-4 gap-4 flex-wrap">
+          <input
+            type="text"
+            placeholder="Search by Customer ID"
+            className="p-2 border rounded w-full max-w-sm"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
+          <Button variant="outline" onClick={handleExport}>
+            Export to CSV
+          </Button>
+        </div>
+
+        <div className="overflow-x-auto border rounded-lg">
+          <table className="min-w-full bg-white text-sm text-left">
+            <thead className="bg-gray-100 text-gray-600">
               <tr>
-                <td colSpan="4" className="text-center px-6 py-5 text-gray-400">
-                  No orders found.
-                </td>
+                <th className="px-4 py-3">Order ID</th>
+                <th className="px-4 py-3">Customer</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Created At</th>
               </tr>
-            ) : (
-              filtered.map((order) => (
-                <tr key={order.id} className="bg-white hover:bg-gray-50 transition">
-                  <td className="px-6 py-4 font-medium">{order.id}</td>
-                  <td className="px-6 py-4">{order.customerName}</td>
-                  <td className="px-6 py-4">{order.status}</td>
-                  <td className="px-6 py-4">${order.total}</td>
+            </thead>
+            <tbody>
+              {filteredOrders.map(order => (
+                <tr key={order._id} className="hover:bg-gray-50">
+                  <td className="px-4 py-2 font-medium">{order._id.slice(-6)}</td>
+                  <td className="px-4 py-2">{order.customerId}</td>
+                  <td className="px-4 py-2">{order.status}</td>
+                  <td className="px-4 py-2">{new Date(order.createdAt).toLocaleString()}</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ))}
+              {filteredOrders.length === 0 && (
+                <tr>
+                  <td colSpan="4" className="text-center py-4 text-gray-400">
+                    No recent orders found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 }
-
-export default AdminDashboard;

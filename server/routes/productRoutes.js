@@ -2,38 +2,20 @@ const Product = require("../models/Product");
 
 module.exports = async function (fastify, opts) {
   fastify.post("/api/products", async (req, reply) => {
-    const { customerId, products } = req.body;
+    try {
+      const { name, stock, price } = req.body;
 
-    // Check for duplicate
-    const existingOrder = await Order.findOne({
-      customerId,
-      products: {
-        $all: products.map((p) => ({
-          productId: p.productId,
-          quantity: p.quantity,
-        })),
-      },
-    });
-
-    if (existingOrder) {
-      return reply.code(400).send({ error: "Duplicate order detected." });
-    }
-
-    // Reserve inventory
-    for (const item of products) {
-      const product = await Product.findById(item.productId);
-      if (!product || product.stock < item.quantity) {
-        return reply
-          .code(400)
-          .send({ error: `Insufficient stock for ${item.productId}` });
+      if (!name || stock == null || price == null) {
+        return reply.code(400).send({ message: "Missing required fields" });
       }
-      product.stock -= item.quantity;
-      await product.save(); // lock stock
-    }
 
-    const newOrder = new Order({ customerId, products });
-    const saved = await newOrder.save();
-    reply.send(saved);
+      const product = new Product({ name, stock, price });
+      const saved = await product.save();
+      reply.send(saved);
+    } catch (err) {
+      console.error("Error creating product:", err.message);
+      reply.code(500).send({ message: "Internal server error" });
+    }
   });
   
   fastify.get("/api/products/:id", async (req, reply) => {

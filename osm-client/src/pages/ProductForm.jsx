@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const ProductForm = () => {
-  const [form, setForm] = useState({ name: "", sku: "", price: "", stock: "" });
+  const [form, setForm] = useState({ name: "", price: "", stock: "" });
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
 
@@ -16,8 +16,8 @@ const ProductForm = () => {
   };
 
   const validateForm = () => {
-    const { name, sku, price, stock } = form;
-    if (!name || !sku || !price || !stock) return "All fields are required.";
+    const { name, price, stock } = form;
+    if (!name || !price || !stock) return "All fields are required.";
     if (parseFloat(price) <= 0) return "Price must be greater than 0.";
     if (parseInt(stock) < 0) return "Stock cannot be negative.";
     return null;
@@ -38,6 +38,7 @@ const ProductForm = () => {
         price: parseFloat(form.price),
         stock: parseInt(form.stock),
       });
+
       setMessage("✅ Product added successfully");
       setError(false);
       setForm({ name: "", sku: "", price: "", stock: "" });
@@ -52,7 +53,7 @@ const ProductForm = () => {
       <CardContent className="p-8">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">📦 Add Product</h2>
         <form onSubmit={handleSubmit} className="space-y-5">
-          {["name", "sku", "price", "stock"].map((field) => (
+          {["name", "price", "stock"].map((field) => (
             <div key={field}>
               <Label htmlFor={field} className="text-sm font-medium text-gray-700 capitalize">
                 {field}

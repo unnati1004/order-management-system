@@ -1,5 +1,5 @@
 // models/Order.js
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const orderItemSchema = new mongoose.Schema({
   productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
@@ -7,14 +7,18 @@ const orderItemSchema = new mongoose.Schema({
   priceAtPurchase: Number,
 });
 
-const orderSchema = new mongoose.Schema({
-  customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  status: {
-    type: String,
-    enum: ['PENDING', 'PAID', 'FULFILLED', 'CANCELLED'],
-    default: 'PENDING'
+const orderSchema = new mongoose.Schema(
+  {
+    customerId : {type: String},
+    status: {
+      type: String,
+      enum: ['PENDING', 'PAID', 'FULFILLED', 'CANCELLED'],
+      default: 'PENDING',
+    },
+    products: [orderItemSchema],
+    paymentReceived: { type: Boolean, default: false }, // ✅ New field
   },
-  products: [orderItemSchema],
-}, { timestamps: true });
+  { timestamps: true }
+);
 
-export default mongoose.model('Order', orderSchema);
+module.exports = mongoose.model('Order', orderSchema);
