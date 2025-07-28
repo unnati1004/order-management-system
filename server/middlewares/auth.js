@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
 // ✅ Authentication Middleware
 export function authenticate(req, res, next) {
