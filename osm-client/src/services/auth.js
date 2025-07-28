@@ -1,8 +1,8 @@
     //  const BASE_URL = 'http://localhost:5000/api';
-    const BASE_URL = import.meta.env.BASE_URL;
+    // const BASE_URL = import.meta.env.BASE_URL;
 
 export async function loginUser(credentials) {
-  const res = await fetch(`${BASE_URL}/auth/login`, {
+  const res = await fetch(`${import.meta.env.BASE_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(credentials),
@@ -17,7 +17,7 @@ export async function loginUser(credentials) {
 }
 
 export async function createUser(user) {
-  const res = await fetch(`${BASE_URL}/auth/register`, {
+  const res = await fetch(`${import.meta.env.BASE_URL}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user),
