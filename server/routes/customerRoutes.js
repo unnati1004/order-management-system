@@ -1,5 +1,5 @@
 const Customer = require('../models/Customer');
-
+const User = require('../models/User'); // make sure the path is correct
 module.exports = async function (fastify, opts) {
   // fastify.post('/api/customers', async (req, reply) => {
   //   const { name, email, phone } = req.body;
