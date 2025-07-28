@@ -41,7 +41,7 @@ const ProductForm = () => {
 
       setMessage("✅ Product added successfully");
       setError(false);
-      setForm({ name: "", sku: "", price: "", stock: "" });
+      setForm({ name: "", price: "", stock: "" });
     } catch (err) {
       setMessage(err.response?.data?.error || "❌ Error adding product");
       setError(true);
