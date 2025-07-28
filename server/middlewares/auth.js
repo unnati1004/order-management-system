@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 // ✅ Authentication Middleware
-export function authenticate(req, res, next) {
+ function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer '))
     return res.status(401).json({ message: 'Unauthorized' });
@@ -18,7 +18,7 @@ export function authenticate(req, res, next) {
 }
 
 // ✅ Role-based Authorization Middleware
-export function authorizeRoles(...roles) {
+ function authorizeRoles(...roles) {
   return (req, res, next) => {
     if (!req.user || !roles.includes(req.user.role)) {
       return res.status(403).json({ message: 'Access denied' });
@@ -26,3 +26,8 @@ export function authorizeRoles(...roles) {
     next();
   };
 }
+
+module.exports = {
+  authenticate,
+  authorizeRoles
+};
