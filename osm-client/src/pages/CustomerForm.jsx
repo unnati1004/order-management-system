@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createCustomer } from "../services/api";
+// import { createCustomer } from "../services/api";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 const CustomerForm = () => {
-  const [form, setForm] = useState({ name: "", email: "", phone: "" });
+  const [form, setForm] = useState({ name: "", email: ""});
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
 
@@ -15,23 +15,23 @@ const CustomerForm = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const result = await createCustomer(form);
-      if (result.error) {
-        setMessage(result.error);
-        setError(true);
-      } else {
-        setMessage("✅ Customer created successfully!");
-        setError(false);
-        setForm({ name: "", email: "", phone: "" });
-      }
-    } catch (err) {
-      setMessage("❌ Something went wrong.");
-      setError(true);
-    }
-  };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const result = await createCustomer(form);
+  //     if (result.error) {
+  //       setMessage(result.error);
+  //       setError(true);
+  //     } else {
+  //       setMessage("✅ Customer created successfully!");
+  //       setError(false);
+  //       setForm({ name: "", email: "", phone: "" });
+  //     }
+  //   } catch (err) {
+  //     setMessage("❌ Something went wrong.");
+  //     setError(true);
+  //   }
+  // };
 
   return (
     <Card className="max-w-md mx-auto mt-16 shadow-xl rounded-2xl border border-gray-200 bg-white">

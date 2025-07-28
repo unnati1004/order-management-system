@@ -46,17 +46,19 @@ export async function getAllOrders() {
 }
 
 // Customers
-export async function createCustomer(customer) {
-  const res = await fetch(`${VITE_API_URL}/api/customers`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(customer),
-  });
-  return res.json();
-}
+// export async function createCustomer(customer) {
+//   const res = await fetch(`${VITE_API_URL}/api/customers`, {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(customer),
+//   });
+//   return res.json();
+// }
 
 export async function getAllCustomers() {
   const res = await fetch(`${VITE_API_URL}/api/customers`);
+  console.log(res," Customers fetched from API");
+  
   return res.json();
 }
 

@@ -45,7 +45,7 @@ const CustomerList = () => {
                 <tr className="text-left">
                   <th className="px-4 py-2">Name</th>
                   <th className="px-4 py-2">Email</th>
-                  <th className="px-4 py-2">Phone</th>
+                  {/* <th className="px-4 py-2">Phone</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -58,7 +58,7 @@ const CustomerList = () => {
                     <tr key={customer._id} className="border-t hover:bg-gray-50">
                       <td className="px-4 py-2">{customer.name}</td>
                       <td className="px-4 py-2">{customer.email}</td>
-                      <td className="px-4 py-2">{customer.phone}</td>
+                      {/* <td className="px-4 py-2">{customer.phone}</td> */}
                     </tr>
                   ))
                 )}

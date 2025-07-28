@@ -1,18 +1,18 @@
 const Customer = require('../models/Customer');
 
 module.exports = async function (fastify, opts) {
-  fastify.post('/api/customers', async (req, reply) => {
-    const { name, email, phone } = req.body;
+  // fastify.post('/api/customers', async (req, reply) => {
+  //   const { name, email, phone } = req.body;
 
-    const existing = await Customer.findOne({ email });
-    if (existing) {
-      return reply.code(400).send({ error: 'Customer with this email already exists.' });
-    }
+  //   const existing = await Customer.findOne({ email });
+  //   if (existing) {
+  //     return reply.code(400).send({ error: 'Customer with this email already exists.' });
+  //   }
 
-    const newCustomer = new Customer({ name, email, phone });
-    const saved = await newCustomer.save();
-    reply.send(saved);
-  });
+  //   const newCustomer = new Customer({ name, email, phone });
+  //   const saved = await newCustomer.save();
+  //   reply.send(saved);
+  // });
 
   fastify.get('/api/customers/:id', async (req, reply) => {
     const customer = await Customer.findById(req.params.id);
@@ -20,10 +20,12 @@ module.exports = async function (fastify, opts) {
     reply.send(customer);
   });
 
-  fastify.get('/api/customers', async (req, reply) => {
-    const customers = await Customer.find();
-    reply.send(customers);
-  });
+ fastify.get('/api/customers', async (req, reply) => {
+  const customers = await User.find({ role: 'customer' });
+  console.log("Customers fetched:", customers);
+  
+  reply.send(customers);
+});
 
   fastify.delete('/api/customers/:id', async (req, reply) => {
     await Customer.findByIdAndDelete(req.params.id);
