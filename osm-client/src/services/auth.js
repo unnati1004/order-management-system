@@ -1,6 +1,3 @@
-    //  const BASE_URL = 'http://localhost:5000/api';
-    // const BASE_URL = import.meta.env.BASE_URL;
-console.log('import.meta.env.BASE_URL', import.meta.env.VITE_API_URL);
 
 export async function loginUser(credentials) {
   const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
@@ -10,10 +7,6 @@ export async function loginUser(credentials) {
   });
 
   const data = await res.json();
-  // if (res.ok) {
-  //   localStorage.setItem('token', data.token);
-  //   localStorage.setItem('user', JSON.stringify(data.user)); // 👈 Store user info
-  // }
   return data;
 }
 
@@ -24,10 +17,6 @@ export async function createUser(user) {
     body: JSON.stringify(user),
   });
   const data = await res.json();
-  // if (res.ok) {
-    // localStorage.setItem('token', data.token);
-    // localStorage.setItem('user', JSON.stringify(data.user)); // 👈 Same here
-  // }
   return data;
 }
 export function logoutUser() {

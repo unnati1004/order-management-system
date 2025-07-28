@@ -36,7 +36,7 @@ const startServer = async () => {
   const allowedOrigins = [
   'http://localhost:5173',
   'https://order-management-project1.netlify.app'
-];
+];  
 
   // ✅ Register CORS
  await fastify.register(cors, {
