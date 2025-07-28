@@ -12,7 +12,6 @@ export default function Dashboard() {
   const [customers, setCustomers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
-
   useEffect(() => {
     async function fetchData() {
       const [o, p, c] = await Promise.all([
