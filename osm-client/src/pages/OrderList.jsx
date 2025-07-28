@@ -32,7 +32,11 @@ function OrderList() {
         );
       });
 
-      return () => socket.off('orderStatusUpdated');
+     // ✅ Cleanup on unmount
+    return () => {
+      socket.off("orderStatusUpdated");
+      socket.disconnect(); // disconnect the socket
+    };
     }
   }, []);
 

@@ -17,7 +17,11 @@ export default function TrackOrder() {
         }
       });
 
-      return () => socket.off('orderStatusUpdated');
+     // ✅ Cleanup on unmount
+    return () => {
+      socket.off("orderStatusUpdated");
+      socket.disconnect(); // disconnect the socket
+    };
     }
   }, [order]);
 

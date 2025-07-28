@@ -17,7 +17,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './routes/protectedRoutes';
 // import MyOrders from './pages/MyOrders';
 import TrackOrder from './pages/TrackOrder';
-import MyOrders from './pages/MyOrders';
+// import MyOrders from './pages/MyOrders';
 
 function App() {
   return (
@@ -51,25 +51,25 @@ function App() {
               <Route
                 path="/orders"
                 element={
-                  // <ProtectedRoute>
+                  <ProtectedRoute>
                     <OrderList />
-                  // </ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/create-order"
                 element={
-                  // <ProtectedRoute>
+                  <ProtectedRoute>
                     <OrderForm />
-                  // </ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/products"
                 element={
-                  // <ProtectedRoute>
+                  <ProtectedRoute>
                     <ProductList />
-                  // </ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               {/* <Route
@@ -83,25 +83,25 @@ function App() {
               <Route
                 path="/add-product"
                 element={
-                  // <ProtectedRoute>
+                  <ProtectedRoute>
                     <ProductForm />
-                  // </ProtectedRoute> 
+                  </ProtectedRoute> 
                 }
               />
               <Route
                 path="/customers"
                 element={
-                  // <ProtectedRoute>
+                  <ProtectedRoute>
                     <CustomerList />
-                  // </ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/customers/new"
                 element={
-                  // <Protec>
+                  <ProtectedRoute>
                     <CustomerForm />
-                  // </Protec tedRoute> */}
+                  </ProtectedRoute>
                 }
               />
               <Route
