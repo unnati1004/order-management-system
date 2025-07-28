@@ -1,11 +1,12 @@
 // socket.js
-import { io } from "socket.io-client";
 
+import { io } from "socket.io-client";
+const BASE_URL = import.meta.env.BASE_URL;
 let socket = null;
 
 export const createSocket = () => {
   if (!socket || socket.disconnected) {
-    socket = io("http://localhost:5000", {
+    socket = io(`${BASE_URL}`, {
       transports: ["websocket"], // optional but recommended
     });
   }
