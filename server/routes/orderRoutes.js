@@ -8,7 +8,7 @@ const statusTransitions = {
 module.exports = async function (fastify, opts) {
   fastify.post("/api/orders", async (req, reply) => {
     const { customerId, products } = req.body;
-    console.log("Creating order with data:", req.body);
+    // console.log("Creating order with data:", req.body);
     
     const existingOrder = await Order.findOne({
       customerId,
@@ -42,7 +42,7 @@ fastify.put("/api/orders/:id/status", async (req, reply) => {
   const { id } = req.params;
   const { status } = req.body;
 
-  console.log("Updating order status:", id, status);
+  // console.log("Updating order status:", id, status);
 
   const order = await Order.findById(id);
   if (!order) return reply.code(404).send({ error: "Order not found" });
@@ -58,7 +58,7 @@ fastify.put("/api/orders/:id/status", async (req, reply) => {
 
   try {
     const saved = await order.save(); // ✅ capture result
-    console.log("orderroutes saved",saved);
+    // console.log("orderroutes saved",saved);
     
     fastify.io.emit('orderStatusUpdated', { id, status });
     reply.send(saved);
