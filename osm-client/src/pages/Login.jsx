@@ -20,13 +20,15 @@ export default function LoginPage() {
     if (!form.email || !form.password) {
       return setError('Email and password are required');
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(form.email)) {
-      return setError('Invalid email format');
-    }
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // if (!emailRegex.test(form.email)) {
+    //   return setError('Invalid email format');
+    // }
 
     try {
        const loggedInUser = await login(form);
+       console.log('Logged in user:', loggedInUser);
+       
       if (loggedInUser?.role === 'admin') {
         navigate('/admin-dashboard');
       } else {
