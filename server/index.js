@@ -42,7 +42,7 @@ const startServer = async () => {
  await fastify.register(cors, {
   origin: (origin, cb) => {
     // Allow requests from localhost:5173 only
-    if (!origin || allowedOrigins.includes("localhost:5173")) {
+    if (!origin || allowedOrigins.includes(origin)) {
       cb(null, true);
       return;
     }
