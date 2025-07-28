@@ -94,9 +94,14 @@ const startServer = async () => {
     reply.status(500).send({ message: "Something went wrong!" });
   });
 
-  fastify.listen({ port: 5000 }, () =>
-    console.log("🚀 Server running on http://localhost:5000")
-  );
+  // fastify.listen({ port: 5000 }, () =>
+  //   console.log("🚀 Server running on http://localhost:5000")
+  // );
+
+  await fastify.listen({ port: process.env.PORT || 5000, host: '0.0.0.0' },()=>{
+    console.log(`🚀 Server running on http://localhost:${process.env.PORT || 5000}`);
+  });
+
 };
 
 startServer();
