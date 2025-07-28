@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createSocket } from '@/socket';
+import { Loader2 } from 'lucide-react';
 
 export default function TrackOrder() {
   const [orderId, setOrderId] = useState('');
@@ -17,11 +18,10 @@ export default function TrackOrder() {
         }
       });
 
-     // ✅ Cleanup on unmount
-    return () => {
-      socket.off("orderStatusUpdated");
-      socket.disconnect(); // disconnect the socket
-    };
+      return () => {
+        socket.off("orderStatusUpdated");
+        socket.disconnect();
+      };
     }
   }, [order]);
 
@@ -44,43 +44,65 @@ export default function TrackOrder() {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-20 p-6 bg-white rounded shadow">
-      <h1 className="text-2xl font-bold mb-4 text-center">Track Your Order</h1>
-      <form onSubmit={handleTrack} className="space-y-4">
+    <div className="max-w-xl mx-auto mt-24 p-8 bg-gradient-to-br from-blue-50 to-white rounded-2xl shadow-2xl">
+      <h1 className="text-3xl font-extrabold mb-6 text-center text-blue-800">
+        📦 Track Your Order
+      </h1>
+
+      <form onSubmit={handleTrack} className="space-y-5">
         <input
           type="text"
-          placeholder="Enter your Order ID"
+          placeholder="Enter Order ID"
           value={orderId}
           onChange={(e) => setOrderId(e.target.value)}
           required
-          className="w-full p-2 border rounded"
+          className="w-full p-3 border border-blue-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all duration-300 flex items-center justify-center"
         >
-          {loading ? 'Searching...' : 'Track Order'}
+          {loading ? (
+            <>
+              <Loader2 className="animate-spin mr-2" /> Searching...
+            </>
+          ) : (
+            'Track Order'
+          )}
         </button>
       </form>
 
-      {error && <p className="text-red-600 mt-4 text-center">{error}</p>}
+      {error && (
+        <p className="text-red-600 mt-4 text-center font-medium">{error}</p>
+      )}
 
       {order && (
-        <div className="mt-6 border-t pt-4 space-y-2 text-sm text-gray-700">
-          <p><strong>Order ID:</strong> {order._id}</p>
-          <p><strong>Status:</strong> {order.status}</p>
-          <p><strong>Payment Received:</strong> {order.paymentReceived ? 'Yes' : 'No'}</p>
-          <p><strong>Products:</strong></p>
-          <ul className="list-disc ml-6">
-            {order.products.map((item, idx) => (
-              <li key={idx}>
-                {item.product?.name || 'Product'} × {item.quantity}
-              </li>
-            ))}
-          </ul>
+        <div className="mt-8 bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-3">
+          <p className="text-gray-700"><strong>🆔 Order ID:</strong> {order._id}</p>
+          <p className="text-gray-700"><strong>📌 Status:</strong> 
+            <span className={`ml-2 px-2 py-1 rounded-full text-xs font-semibold ${
+              order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+              order.status === 'PAID' ? 'bg-blue-100 text-blue-800' :
+              order.status === 'FULFILLED' ? 'bg-green-100 text-green-800' :
+              order.status === 'CANCELLED' ? 'bg-red-100 text-red-800' : ''
+            }`}>
+              {order.status}
+            </span>
+          </p>
+          <p className="text-gray-700"><strong>💰 Payment Received:</strong> {order.paymentReceived ? 'Yes ✅' : 'No ❌'}</p>
+          <div>
+            <p className="text-gray-700 font-semibold">🛍️ Products:</p>
+            <ul className="list-disc ml-6 mt-1 text-gray-600">
+              {order.products.map((item, idx) => (
+                <li key={idx}>
+                  {item.product?.name || 'Unnamed Product'} × {item.quantity}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
     </div>
   );
 }
-  
