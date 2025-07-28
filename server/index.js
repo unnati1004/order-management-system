@@ -33,12 +33,16 @@ const startServer = async () => {
   //     environment: process.env.NODE_ENV || "development",
   //   });
   // }
+  const allowedOrigins = [
+  'http://localhost:5173',
+  'https://order-management-project1.netlify.app'
+];
 
   // ✅ Register CORS
  await fastify.register(cors, {
   origin: (origin, cb) => {
     // Allow requests from localhost:5173 only
-    if (!origin || origin.includes("localhost:5173")) {
+    if (!origin || allowedOrigins.includes("localhost:5173")) {
       cb(null, true);
       return;
     }
