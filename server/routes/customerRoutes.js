@@ -1,4 +1,3 @@
-const Customer = require('../models/Customer');
 const User = require('../models/User'); // make sure the path is correct
 module.exports = async function (fastify, opts) {
   // fastify.post('/api/customers', async (req, reply) => {
@@ -15,7 +14,7 @@ module.exports = async function (fastify, opts) {
   // });
 
   fastify.get('/api/customers/:id', async (req, reply) => {
-    const customer = await Customer.findById(req.params.id);
+    const customer = await User.findById(req.params.id);
     if (!customer) return reply.code(404).send({ error: 'Customer not found' });
     reply.send(customer);
   });
@@ -28,7 +27,7 @@ module.exports = async function (fastify, opts) {
 });
 
   fastify.delete('/api/customers/:id', async (req, reply) => {
-    await Customer.findByIdAndDelete(req.params.id);
+    await User.findByIdAndDelete(req.params.id);
     reply.send({ success: true });
   });
 };
