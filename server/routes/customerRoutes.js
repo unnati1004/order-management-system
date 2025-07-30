@@ -21,7 +21,7 @@ module.exports = async function (fastify, opts) {
 
  fastify.get('/api/customers',{preHandler: [authorizeRoles('admin')]}, async (req, reply) => {
   const customers = await User.find({ role: 'customer' });
-  console.log("Customers fetched:", customers);
+  // console.log("Customers fetched:", customers);
   
   reply.send(customers);
 });

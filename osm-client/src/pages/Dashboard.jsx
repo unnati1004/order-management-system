@@ -45,7 +45,6 @@ const CustomerDashboard = () => {
       });
 
       const data = await res.json();
-      console.log("Order response:", data);
       if (!res.ok) throw new Error(data.message || "Failed to place order");
 
       alert("✅ Order placed successfully!");

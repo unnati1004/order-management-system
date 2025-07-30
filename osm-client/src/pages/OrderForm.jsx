@@ -38,7 +38,6 @@ export default function OrderForm() {
       alert('Please provide customer ID and at least one valid product');
       return;
     }
-    // console.log("Sending order data to backend:", order);
 
     await createOrder({ customerId, products: validItems });
     navigate('/orders');

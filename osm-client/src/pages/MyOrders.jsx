@@ -6,7 +6,6 @@ export default function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
-  // console.log("user in MyOrders", user);
   
   useEffect(() => {
     const fetchOrders = async () => {

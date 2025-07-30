@@ -40,8 +40,7 @@ export async function updateOrderStatus(id, status) {
 
 export async function getAllOrders() {
   const res = await fetch(`${VITE_API_URL}/api/orders`);
-  // console.log("order",res);
-  
+
   return res.json();
 }
 
@@ -57,7 +56,6 @@ export async function getAllOrders() {
 
 export async function getAllCustomers() {
   const res = await fetch(`${VITE_API_URL}/api/customers`);
-  console.log(res," Customers fetched from API");
   
   return res.json();
 }

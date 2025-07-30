@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
     });
 
     const data = await res.json();
-    console.log("login",data);
     
     if (res.ok) {
       setUser(data); // set user in context

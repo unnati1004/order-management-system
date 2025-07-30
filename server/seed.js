@@ -20,7 +20,7 @@ async function seedProducts() {
     }));
 
     await Product.insertMany(formatted);
-    console.log('✅ Products seeded');
+    // console.log('✅ Products seeded');
     process.exit();
   } catch (err) {
     console.error('❌ Error seeding products:', err.message);

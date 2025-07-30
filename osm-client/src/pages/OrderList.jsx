@@ -39,12 +39,10 @@ function OrderList() {
     };
     }
   }, []);
-  console.log("Orders:", orders);
   
   const filteredOrders = orders.filter((order) =>
     order.customerId?.toString().toLowerCase().includes(search.toLowerCase())
   );
-  console.log("Filtered Orders:", filteredOrders);
   
   const handleStatusChange = async (orderId, newStatus) => {
   try {
