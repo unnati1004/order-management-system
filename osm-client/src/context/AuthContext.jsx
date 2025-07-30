@@ -14,8 +14,10 @@ export const AuthProvider = ({ children }) => {
     });
 
     const data = await res.json();
+    console.log("login",data);
+    
     if (res.ok) {
-      setUser(data.user); // set user in context
+      setUser(data); // set user in context
       return data.user; // return user to LoginPage
     } else {
       throw new Error(data.error || "Login failed");

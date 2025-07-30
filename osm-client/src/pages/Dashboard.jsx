@@ -11,7 +11,7 @@ const CustomerDashboard = () => {
 
   useEffect(() => {
     // const user = JSON.parse(localStorage.getItem("user"));
-    if (!user || user.role !== "customer") {
+    if (!user || user.user.role !== "customer") {
       navigate("/login");
       return;
     }
@@ -39,7 +39,7 @@ const CustomerDashboard = () => {
           Authorization: `Bearer ${user.token}`, // if using JWT auth
         },
         body: JSON.stringify({
-          customerId: user.id, // assuming your AuthContext provides the logged-in user's _id
+          customerId: user.user.id, // assuming your AuthContext provides the logged-in user's _id
           products: [{ productId, quantity: 1 }],
         }),
       });

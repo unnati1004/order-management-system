@@ -1,53 +1,67 @@
-// src/pages/MyOrders.jsx
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import { useAuth } from '@/context/AuthContext';
+import { FaBoxOpen, FaClock, FaHashtag } from 'react-icons/fa';
 export default function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const fetchOrders = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('/api/orders/my', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setOrders(res.data);
-    } catch (err) {
-      console.error('Error fetching orders', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  const { user } = useAuth();
+  console.log("user in MyOrders", user);
+  
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    const fetchOrders = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders/my`, {
+          headers: { Authorization: `Bearer ${user?.token}` }
+        });
+        setOrders(res.data);
+      } catch (err) {
+        console.error('Error fetching orders', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (loading) return <div className="p-4">Loading your orders...</div>;
+    if(user?.token) fetchOrders();
+  }, [user]);
 
-  return (
-    <div className="p-6">
-      <h1 className="text-xl font-semibold mb-4">My Orders</h1>
+  if (loading) return <div className="p-4 text-center text-lg font-medium">⏳ Loading your orders...</div>;
+
+return (
+    <div className="max-w-5xl mx-auto p-6">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">📦 My Orders</h1>
       {orders.length === 0 ? (
-        <p className="text-gray-600">You have not placed any orders yet.</p>
+        <p className="text-gray-600 text-center">You have not placed any orders yet.</p>
       ) : (
-        <div className="space-y-4">
-          {orders?.map(order => (
-            <div key={order._id} className="border p-4 rounded-md shadow bg-white">
-              <div className="text-sm text-gray-600">Order ID: {order._id}</div>
-              <div className="font-medium">Status: <span className="text-blue-600">{order.status}</span></div>
-              <div className="mt-2">
-                <h3 className="font-semibold">Products:</h3>
-                <ul className="list-disc ml-5 text-sm">
+        <div className="space-y-6">
+          {orders.map(order => (
+            <div key={order._id} className="bg-white border shadow-md rounded-xl p-6 hover:shadow-lg transition-all">
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-2 text-gray-700">
+                  <FaHashtag className="text-blue-600" />
+                  <span className="text-sm font-medium">Order ID:</span>
+                  <span className="text-sm">{order._id}</span>
+                </div>
+                <div className="text-sm font-semibold text-indigo-600 uppercase tracking-wide">
+                  {order.status}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-gray-800">
+                  <FaBoxOpen className="text-green-600" /> Products:
+                </h3>
+                <ul className="ml-6 list-disc text-sm text-gray-700 space-y-1">
                   {order.products.map((item, idx) => (
                     <li key={idx}>
-                      {item.product?.name || 'Unknown Product'} × {item.quantity}
+                      {item.productId?.name || 'Unknown Product'} × {item.quantity}
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="text-xs text-gray-500 mt-2">
+
+              <div className="text-xs text-gray-500 mt-4 flex items-center gap-2">
+                <FaClock className="text-gray-400" />
                 Placed on: {new Date(order.createdAt).toLocaleString()}
               </div>
             </div>

@@ -17,6 +17,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './routes/protectedRoutes';
 // import MyOrders from './pages/MyOrders';
 import TrackOrder from './pages/TrackOrder';
+import MyOrders from './pages/MyOrders';
 // import MyOrders from './pages/MyOrders';
 
 function App() {
@@ -45,6 +46,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-orders"
+                element={
+                  <ProtectedRoute>
+                    <MyOrders />
                   </ProtectedRoute>
                 }
               />

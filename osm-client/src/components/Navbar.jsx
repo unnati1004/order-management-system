@@ -15,7 +15,7 @@ export default function Navbar() {
     navigate("/login");
   };
 
-  const dashboardPath = user?.role === "admin" ? "/admin-dashboard" : "/";
+  const dashboardPath = user?.user.role === "admin" ? "/admin-dashboard" : "/";
 
   return (
     <nav className="bg-slate-800 text-white p-4 flex justify-between items-center">
@@ -24,7 +24,7 @@ export default function Navbar() {
           Dashboard
         </Link>
 
-        {user?.role === "admin" && (
+        {user?.user.role === "admin" && (
           <>
             <Link to="/orders">Orders</Link>
             <Link to="/products">Products</Link>
@@ -32,20 +32,19 @@ export default function Navbar() {
             <Link to="/trackorder">Track Order</Link>
           </>
          )} 
-         {/* {user?.role === 'customer' && (
+         {user?.user.role === 'customer' && (
           <>
-            <Link to="/place-order">Place Order</Link>
             <Link to="/my-orders">
             <FaShoppingCart/> 
             </Link>
           </>
-        )} */}
+        )}
       </div>
-
+        
       {user ? (
         <div className="flex items-center gap-4">
           <span className="text-sm text-gray-300">
-            👤 {user.name} ({user.role})
+            👤 {user.user.name} ({user.user.role})
           </span>
           <button
             onClick={handleLogout}
