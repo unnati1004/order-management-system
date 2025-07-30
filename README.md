@@ -1,6 +1,6 @@
 # 🛒 Order Management System (OMS)
 
-A scalable, real-time Order Management System built with **Next.js**, **Fastify (Node.js)**, and **PostgreSQL**. It supports full CRUD operations for orders, products, and customers, enforces a strict order-status pipeline, and provides real-time updates via WebSockets.
+A scalable, real-time Order Management System built with **Next.js**, **Fastify (Node.js)**, and **MongoDB**. It supports full CRUD operations for orders, products, and customers, enforces a strict order-status pipeline, and provides real-time updates via WebSockets.
 
 ---
 
@@ -13,10 +13,22 @@ A scalable, real-time Order Management System built with **Next.js**, **Fastify 
 - 📤 Export orders to CSV
 - 🔍 Search & Filter Dashboard
 - ⚙️ Fastify-based API Server
-- 🎯 PostgreSQL with ER modeling
+- 🎯 MongoDB with ER modeling
 
 ---
+## 🔐 Credentials
 
+Use these credentials to log in as different roles:
+
+### 👤 Customer
+- **Email:** `unnatigandhi1999@gmail.com`  
+- **Password:** `123456`
+
+### 👩‍💼 Admin
+- **Email:** `admin@gmail.com`  
+- **Password:** `123456`
+
+---
 ## 📁 Project Structure
 
 ├── apps/
@@ -41,7 +53,7 @@ A scalable, real-time Order Management System built with **Next.js**, **Fastify 
 Copy `.env.example` to `.env` and fill in the appropriate values:
 
 ```env
-DATABASE_URL=postgresql://user:password@host:5432/db
+DATABASE_URL=MongoDB://user:password@host:5432/db
 JWT_SECRET=your_jwt_secret
 NEXTAUTH_SECRET=your_nextauth_secret
 
@@ -69,7 +81,7 @@ Production Deployment
 | ----------- | -------- | ------------------------ |
 | Frontend    | Vercel   | Auto deploys from `main` |
 | API Backend | Render   | Fastify server           |
-| Database    | Supabase | Hosted PostgreSQL        |
+| Database    | Supabase | Hosted MongoDB        |
 | Realtime    | Same API | WebSocket with Socket.IO |
 
 🔍 High-Level Design Document
@@ -99,7 +111,7 @@ Frontend: Next.js + TailwindCSS + Zustand/Context
 
 Backend: Fastify + Node.js + Socket.IO
 
-Database: PostgreSQL via Prisma or native driver
+Database: MongoDB via Prisma or native driver
 
 Deployment: Vercel (Frontend) + Render (Backend)
 
