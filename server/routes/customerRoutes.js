@@ -12,14 +12,14 @@ module.exports = async function (fastify, opts) {
   //   const saved = await newCustomer.save();
   //   reply.send(saved);
   // });
-
+const { authorizeRoles } = require('../middlewares/auth');
   fastify.get('/api/customers/:id', async (req, reply) => {
     const customer = await User.findById(req.params.id);
     if (!customer) return reply.code(404).send({ error: 'Customer not found' });
     reply.send(customer);
   });
 
- fastify.get('/api/customers', async (req, reply) => {
+ fastify.get('/api/customers',{preHandler: [authorizeRoles('admin')]}, async (req, reply) => {
   const customers = await User.find({ role: 'customer' });
   console.log("Customers fetched:", customers);
   

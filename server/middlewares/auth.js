@@ -1,31 +1,32 @@
-const jwt = require('jsonwebtoken');
-
 // ✅ Authentication Middleware
- function authenticate(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer '))
-    return res.status(401).json({ message: 'Unauthorized' });
+// middlewares/auth.js
+const jwt = require("jsonwebtoken");
 
-  const token = authHeader.split(' ')[1];
-
+ async function authenticate(req, reply){
   try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return reply.code(401).send({ error: "Unauthorized" });
+    }
+
+    const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Attach user info to request
-    next();
+    req.user = decoded; // { id, role }
   } catch (err) {
-    return res.status(403).json({ message: 'Invalid token' });
+    reply.code(401).send({ error: "Invalid token" });
   }
-}
+};
+
 
 // ✅ Role-based Authorization Middleware
- function authorizeRoles(...roles) {
-  return (req, res, next) => {
-    if (!req.user || !roles.includes(req.user.role)) {
-      return res.status(403).json({ message: 'Access denied' });
+
+ function authorizeRoles(...roles){
+  return async (req, reply) => {
+    if (!roles.includes(req.user.role)) {
+      return reply.code(403).send({ error: "Forbidden: Access denied" });
     }
-    next();
   };
-}
+};
 
 module.exports = {
   authenticate,

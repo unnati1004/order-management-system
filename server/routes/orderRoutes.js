@@ -78,4 +78,16 @@ fastify.get("/api/orders", async (req, reply) => {
   }
 });
 
+// /api/orders/my
+fastify.get('/api/orders/my', { preHandler: [authenticate] }, async (req, reply) => {
+  try {
+    const customerId = req.user.id; // set in auth middleware
+    const orders = await Order.find({ customerId }).populate('products.productId');
+    reply.send(orders);
+  } catch (err) {
+    console.error("Error fetching customer orders:", err);
+    reply.code(500).send({ error: 'Failed to fetch your orders' });
+  }
+});
+
 };
