@@ -19,11 +19,9 @@ module.exports = async function (fastify, opts) {
     reply.send(customer);
   });
 
-fastify.get('/api/customers', async (req, reply) => {
+fastify.get('/api/customers',{preHandler: [authenticate, authorizeRoles('admin')]}, async (req, reply) => {
   try {
     const customers = await User.find({ role: 'customer' });
-    console.log(customers, "Customers fetched from DB");
-    
     return reply.send({ customers }); // key here
   } catch (err) {
     req.log.error(err);
