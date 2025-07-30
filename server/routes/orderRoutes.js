@@ -1,4 +1,5 @@
 const Order = require("../models/Order");
+const { authenticate } = require('../middlewares/auth');
 const statusTransitions = {
   PENDING: ['PAID', 'CANCELLED'],
   PAID: ['FULFILLED', 'CANCELLED'],
