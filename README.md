@@ -107,7 +107,7 @@ Includes:
 | Customer | View orders only                        |
 
 📦 Tech Stack
-Frontend: Next.js + TailwindCSS + Zustand/Context
+Frontend: React.js + TailwindCSS + Zustand/Context
 
 Backend: Fastify + Node.js + Socket.IO
 
