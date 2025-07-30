@@ -1,4 +1,5 @@
 const User = require('../models/User'); // make sure the path is correct
+const { authorizeRoles } = require('../middlewares/auth');
 module.exports = async function (fastify, opts) {
   // fastify.post('/api/customers', async (req, reply) => {
   //   const { name, email, phone } = req.body;
@@ -12,7 +13,6 @@ module.exports = async function (fastify, opts) {
   //   const saved = await newCustomer.save();
   //   reply.send(saved);
   // });
-const { authorizeRoles } = require('../middlewares/auth');
   fastify.get('/api/customers/:id', async (req, reply) => {
     const customer = await User.findById(req.params.id);
     if (!customer) return reply.code(404).send({ error: 'Customer not found' });
