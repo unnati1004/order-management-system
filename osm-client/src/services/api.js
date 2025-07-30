@@ -44,20 +44,29 @@ export async function getAllOrders() {
   return res.json();
 }
 
-// Customers
-// export async function createCustomer(customer) {
-//   const res = await fetch(`${VITE_API_URL}/api/customers`, {
-//     method: 'POST',
-//     headers: { 'Content-Type': 'application/json' },
-//     body: JSON.stringify(customer),
-//   });
-//   return res.json();
-// }
 
 export async function getAllCustomers() {
-  const res = await fetch(`${VITE_API_URL}/api/customers`);
-  
-  return res.json();
+  try {
+    const res = await fetch(`${VITE_API_URL}/api/customers`, {
+      headers: {
+        'Content-Type': 'application/json',
+        // Add Authorization if needed
+        // Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    const data = await res.json();
+    console.log("Fetching customers from backend...",data);
+
+    if (!res.ok) {
+      throw new Error(data.message || 'Failed to fetch customers');
+    }
+
+    return data.customers; // ✅ return the correct array
+  } catch (error) {
+    console.error('Error fetching customers:', error);
+    return []; // return empty array on error to prevent .filter() crash
+  }
 }
 
 // Products
