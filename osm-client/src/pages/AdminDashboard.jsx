@@ -5,19 +5,23 @@ import { Button } from '@/components/ui/button';
 import { BarChart, User, Package } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Papa from 'papaparse';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Dashboard() {
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const { user } = useAuth();
+  const token = user?.token;
+
   const navigate = useNavigate();
   useEffect(() => {
     async function fetchData() {
       const [o, p, c] = await Promise.all([
         getAllOrders(),
         getAllProducts(),
-        getAllCustomers(),
+        getAllCustomers(token),
       ]);
       setOrders(o);
       setProducts(p);

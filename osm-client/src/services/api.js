@@ -33,7 +33,6 @@ export async function updateOrderStatus(id, status) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ status }),
   });
-  console.log(id,status);
   
   return res.json();
 }
@@ -45,18 +44,18 @@ export async function getAllOrders() {
 }
 
 
-export async function getAllCustomers() {
+export async function getAllCustomers(token) {
   try {
     const res = await fetch(`${VITE_API_URL}/api/customers`, {
       headers: {
         'Content-Type': 'application/json',
         // Add Authorization if needed
-        // Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     
     const data = await res.json();
-    console.log("Fetching customers from backend...",data);
+    // console.log("Fetching customers from backend...",data);
 
     if (!res.ok) {
       throw new Error(data.message || 'Failed to fetch customers');
