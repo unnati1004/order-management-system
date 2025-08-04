@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { Loader2 } from "lucide-react";
-
+import { toast } from "sonner";
 const CustomerDashboard = () => {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState("");
@@ -55,7 +55,9 @@ const CustomerDashboard = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to place order");
 
-      alert("✅ Order placed successfully!");
+      toast.success("✅ Order Placed", {
+        description: `Order ID: ${data._id}`,
+      });
     } catch (err) {
       console.error(err);
       setError(err.message);

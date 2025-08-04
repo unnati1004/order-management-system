@@ -35,7 +35,10 @@ export default function Navbar() {
          {user?.user.role === 'customer' && (
           <>
             <Link to="/my-orders">
-            <FaShoppingCart/> 
+             My Orders
+            </Link>
+            <Link to="/trackorder">
+              Track Order
             </Link>
           </>
         )}

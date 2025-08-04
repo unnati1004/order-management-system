@@ -19,11 +19,12 @@ import ProtectedRoute from './routes/protectedRoutes';
 import TrackOrder from './pages/TrackOrder';
 import MyOrders from './pages/MyOrders';
 // import MyOrders from './pages/MyOrders';
-
+import { Toaster } from "sonner";
 function App() {
   return (
     <AuthProvider>
       <Router>
+        <Toaster richColors position="top-right" />
         <div className="min-h-screen bg-gray-50">
           <Navbar />
           <main className="pt-20 px-4">
