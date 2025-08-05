@@ -12,8 +12,8 @@ const orderSchema = new mongoose.Schema(
     customerId : {type: String},
     status: {
       type: String,
-      enum: ['PENDING', 'PAID', 'FULFILLED', 'CANCELLED'],
-      default: 'PENDING',
+      enum: ['PLACED', 'PICKED', 'SHIPPED', 'DELIVERED', 'CANCELLED'],
+      default: 'PLACED',
     },
     products: [orderItemSchema],
     paymentReceived: { type: Boolean, default: false }, // ✅ New field

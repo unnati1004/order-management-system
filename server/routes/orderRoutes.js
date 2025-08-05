@@ -1,15 +1,15 @@
 const Order = require("../models/Order");
-const { authenticate } = require('../middlewares/auth');
+const { authenticate } = require("../middlewares/auth");
 const statusTransitions = {
-  PENDING: ['PAID', 'CANCELLED'],
-  PAID: ['FULFILLED', 'CANCELLED'],
+  PENDING: ["PAID", "CANCELLED"],
+  PAID: ["FULFILLED", "CANCELLED"],
   FULFILLED: [],
   CANCELLED: [],
 };
 module.exports = async function (fastify, opts) {
   fastify.post("/api/orders", async (req, reply) => {
     const { customerId, products } = req.body;
-    
+
     const existingOrder = await Order.findOne({
       customerId,
       products: {
@@ -21,11 +21,9 @@ module.exports = async function (fastify, opts) {
     });
 
     if (existingOrder) {
-      return reply
-        .code(400)
-        .send({
-          error: "Duplicate order detected. Same order already exists.",
-        });
+      return reply.code(400).send({
+        error: "Duplicate order detected. Same order already exists.",
+      });
     }
 
     const newOrder = new Order(req.body);
@@ -38,57 +36,85 @@ module.exports = async function (fastify, opts) {
     reply.send(order);
   });
 
-fastify.put("/api/orders/:id/status", async (req, reply) => {
+  // PUT /api/orders/:id/payment
+fastify.put("/api/orders/:id/payment", async (req, reply) => {
   const { id } = req.params;
-  const { status } = req.body;
-
-  // console.log("Updating order status:", id, status);
-
-  const order = await Order.findById(id);
-  if (!order) return reply.code(404).send({ error: "Order not found" });
-
-  const currentStatus = order.status;
-  if (!statusTransitions[currentStatus]?.includes(status)) {
-    return reply.code(400).send({
-      error: `Invalid status transition from ${currentStatus} to ${status}`,
-    });
-  }
-
-  order.status = status;
 
   try {
-    const saved = await order.save(); // ✅ capture result
-    // console.log("orderroutes saved",saved);
-    
-    fastify.io.emit('orderStatusUpdated', { id, status });
+    const order = await Order.findById(id);
+    if (!order) {
+      return reply.code(404).send({ error: "Order not found" });
+    }
+
+    // Toggle the paymentReceived flag
+    order.paymentReceived = !order.paymentReceived;
+    const saved = await order.save();
+
+    fastify.io.emit("orderPaymentToggled", { id: saved._id, paymentReceived: saved.paymentReceived }); // optional real-time event
     reply.send(saved);
   } catch (err) {
-    console.error("Failed to save order:", err);
-    reply.code(500).send({ error: "Internal Server Error", message: err.message });
+    console.error("Failed to toggle payment status:", err.message);
+    reply.code(500).send({ error: "Failed to toggle payment status" });
   }
 });
 
+  fastify.put("/api/orders/:id/status", async (req, reply) => {
+    const { id } = req.params;
+    const { status } = req.body;
 
-fastify.get("/api/orders", async (req, reply) => {
-  try {
-    const orders = await Order.find();
-    reply.send(orders);
-  } catch (err) {
-    console.error("Error fetching orders:", err.message);
-    reply.code(500).send({ error: "Failed to fetch orders" });
-  }
-});
+    // console.log("Updating order status:", id, status);
 
-// /api/orders/my
-fastify.get('/api/orders/my', { preHandler: [authenticate] }, async (req, reply) => {
-  try {
-    const customerId = req.user.id; // set in auth middleware
-    const orders = await Order.find({ customerId }).populate('products.productId');
-    reply.send(orders);
-  } catch (err) {
-    console.error("Error fetching customer orders:", err);
-    reply.code(500).send({ error: 'Failed to fetch your orders' });
-  }
-});
+    const order = await Order.findById(id);
+    if (!order) return reply.code(404).send({ error: "Order not found" });
 
+    const currentStatus = order.status;
+    if (!statusTransitions[currentStatus]?.includes(status)) {
+      return reply.code(400).send({
+        error: `Invalid status transition from ${currentStatus} to ${status}`,
+      });
+    }
+
+    order.status = status;
+
+    try {
+      const saved = await order.save(); // ✅ capture result
+      // console.log("orderroutes saved",saved);
+
+      fastify.io.emit("orderStatusUpdated", { id, status });
+      reply.send(saved);
+    } catch (err) {
+      console.error("Failed to save order:", err);
+      reply
+        .code(500)
+        .send({ error: "Internal Server Error", message: err.message });
+    }
+  });
+
+  fastify.get("/api/orders", async (req, reply) => {
+    try {
+      const orders = await Order.find();
+      reply.send(orders);
+    } catch (err) {
+      console.error("Error fetching orders:", err.message);
+      reply.code(500).send({ error: "Failed to fetch orders" });
+    }
+  });
+
+  // /api/orders/my
+  fastify.get(
+    "/api/orders/my",
+    { preHandler: [authenticate] },
+    async (req, reply) => {
+      try {
+        const customerId = req.user.id; // set in auth middleware
+        const orders = await Order.find({ customerId }).populate(
+          "products.productId"
+        );
+        reply.send(orders);
+      } catch (err) {
+        console.error("Error fetching customer orders:", err);
+        reply.code(500).send({ error: "Failed to fetch your orders" });
+      }
+    }
+  );
 };
