@@ -39,9 +39,12 @@ module.exports = async function (fastify, opts) {
   // PUT /api/orders/:id/payment
 fastify.put("/api/orders/:id/payment", async (req, reply) => {
   const { id } = req.params;
-
+  console.log("backend",id);
+  
   try {
     const order = await Order.findById(id);
+    console.log("backendorder",order);
+    
     if (!order) {
       return reply.code(404).send({ error: "Order not found" });
     }
@@ -50,7 +53,7 @@ fastify.put("/api/orders/:id/payment", async (req, reply) => {
     order.paymentReceived = !order.paymentReceived;
     const saved = await order.save();
 
-    fastify.io.emit("orderPaymentToggled", { id: saved._id, paymentReceived: saved.paymentReceived }); // optional real-time event
+    // fastify.io.emit("orderPaymentToggled", { id: saved._id, paymentReceived: saved.paymentReceived }); // optional real-time event
     reply.send(saved);
   } catch (err) {
     console.error("Failed to toggle payment status:", err.message);
