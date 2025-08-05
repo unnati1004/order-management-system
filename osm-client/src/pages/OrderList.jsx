@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllOrders, updateOrderStatus } from "../services/api";
+import {
+  getAllOrders,
+  togglePaymentStatus,
+  updateOrderStatus,
+} from "../services/api";
 import { createSocket } from "@/socket";
 
 function OrderList() {
@@ -12,8 +16,7 @@ function OrderList() {
     async function fetchOrders() {
       try {
         const data = await getAllOrders();
-        // console.log("Fetched orders:", data);
-        
+
         setOrders(data);
       } catch (error) {
         console.error("Failed to fetch orders:", error);
@@ -22,39 +25,48 @@ function OrderList() {
 
     fetchOrders();
 
-    const socket = createSocket ();
+    const socket = createSocket();
     if (socket) {
-      socket.on('orderStatusUpdated', ({ id, status }) => {
-        setOrders(prev =>
-          prev.map(order =>
-            order._id === id ? { ...order, status } : order
-          )
+      socket.on("orderStatusUpdated", ({ id, status }) => {
+        setOrders((prev) =>
+          prev.map((order) => (order._id === id ? { ...order, status } : order))
         );
       });
 
-     // ✅ Cleanup on unmount
-    return () => {
-      socket.off("orderStatusUpdated");
-      socket.disconnect(); // disconnect the socket
-    };
+      // ✅ Cleanup on unmount
+      return () => {
+        socket.off("orderStatusUpdated");
+        socket.disconnect(); // disconnect the socket
+      };
     }
   }, []);
-  
+
   const filteredOrders = orders.filter((order) =>
     order.customerId?.toString().toLowerCase().includes(search.toLowerCase())
   );
-  
-  const handleStatusChange = async (orderId, newStatus) => {
-  try {
-    const updated = await updateOrderStatus(orderId, newStatus); // ✅ Just the status string
 
-    setOrders((prev) =>
-      prev.map((o) => (o._id === updated._id ? updated : o))
-    );
-  } catch (err) {
-    console.error("Failed to update status:", err);
-  }
-};
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      const updated = await updateOrderStatus(orderId, newStatus); // ✅ Just the status string
+
+      setOrders((prev) =>
+        prev.map((o) => (o._id === updated._id ? updated : o))
+      );
+    } catch (err) {
+      console.error("Failed to update status:", err);
+    }
+  };
+  const handleTogglePayment = async (orderId) => {
+    try {
+      const updated = await togglePaymentStatus(orderId);
+      
+      setOrders((prev) =>
+        prev.map((o) => (o._id === updated._id ? updated : o))
+      );
+    } catch (err) {
+      console.error("Failed to toggle payment:", err);
+    }
+  };
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
@@ -84,6 +96,7 @@ function OrderList() {
               <th className="border p-2">Products</th>
               <th className="border p-2">Status</th>
               <th className="border p-2">Date</th>
+              <th className="border p-2">Payment Status</th>
             </tr>
           </thead>
           <tbody>
@@ -95,7 +108,14 @@ function OrderList() {
               </tr>
             ) : (
               filteredOrders.map((order) => (
-                <tr key={order?._id} className="border-t hover:bg-gray-50">
+                <tr
+                  key={order?._id}
+                  className={`border-t hover:bg-gray-50 ${
+                    order.status === "CANCELLED"
+                      ? "opacity-50 pointer-events-none"
+                      : ""
+                  }`}
+                >
                   <td className="border p-2">{order?._id}</td>
                   <td className="border p-2">{order?.customerId}</td>
                   <td className="border p-2">
@@ -113,15 +133,33 @@ function OrderList() {
                       }
                       className="border p-1 rounded"
                     >
-                      {["PENDING", "PAID", "FULFILLED", "CANCELLED"].map((s) => (
+                      {[
+                        "PLACED",
+                        "PICKED",
+                        "SHIPPED",
+                        "DELIVERED",
+                        "CANCELLED",
+                      ].map((s) => (
                         <option key={s} value={s}>
                           {s}
                         </option>
                       ))}
                     </select>
                   </td>
-                  <td className="border p-2">x
+                  <td className="border p-2">
                     {new Date(order?.createdAt).toLocaleString()}
+                  </td>
+                  <td className="border p-2 text-center">
+                    <button
+                      onClick={() => handleTogglePayment(order._id)}
+                      className={`px-2 py-1 text-sm rounded ${
+                        order.paymentReceived
+                          ? "bg-green-500 text-white"
+                          : "bg-gray-300 text-black"
+                      }`}
+                    >
+                      {order.paymentReceived ? "Paid" : "Mark as Paid"}
+                    </button>
                   </td>
                 </tr>
               ))

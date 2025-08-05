@@ -43,7 +43,29 @@ export async function getAllOrders() {
   return res.json();
 }
 
+export async function togglePaymentStatus(orderId) {
+  try {
+    const res = await fetch(`${VITE_API_URL}/api/orders/${orderId}/payment`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}), // Sending orderId in body
+    });
+    
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || 'Failed to toggle payment status');
+    }
 
+    return data;
+  } catch (error) {
+    console.error('Failed to toggle payment status:', error);
+    throw error;
+  }
+}
+
+// customers
 export async function getAllCustomers(token) {
   try {
     const res = await fetch(`${VITE_API_URL}/api/customers`, {
@@ -55,7 +77,6 @@ export async function getAllCustomers(token) {
     });
     
     const data = await res.json();
-    // console.log("Fetching customers from backend...",data);
 
     if (!res.ok) {
       throw new Error(data.message || 'Failed to fetch customers');
@@ -71,14 +92,11 @@ export async function getAllCustomers(token) {
 // Products
 export async function createProduct(product) {
   try {
-    // console.log("Sending product to backend:", product); // ✅ LOG
-
     const res = await fetch(`${VITE_API_URL}/api/products`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(product),
     });
-    // console.log(" sending to backend:", product); // ✅ LOG
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'Product creation failed');
     return data;

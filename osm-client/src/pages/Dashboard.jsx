@@ -8,8 +8,7 @@ const CustomerDashboard = () => {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true); // 👈 Loading for product fetch
-  const [orderLoading, setOrderLoading] = useState(false); // Optional: For order placing
-
+const [loadingProductId, setLoadingProductId] = useState(null);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -39,7 +38,7 @@ const CustomerDashboard = () => {
 
   const handlePlaceOrder = async (productId) => {
     try {
-      setOrderLoading(true);
+      setLoadingProductId(productId);
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders`, {
         method: "POST",
         headers: {
@@ -62,7 +61,7 @@ const CustomerDashboard = () => {
       console.error(err);
       setError(err.message);
     } finally {
-      setOrderLoading(false);
+      setLoadingProductId(null);
     }
   };
 
@@ -90,6 +89,9 @@ const CustomerDashboard = () => {
                 <p className="text-indigo-600 font-medium mb-1">
                   Price: ₹{product.price}
                 </p>
+                <p className="text-indigo-600 font-medium mb-1">
+                  Stock: ₹{product.stock}
+                </p>
                 <p className="text-gray-500 text-sm line-clamp-3">
                   {product.description || "No description available."}
                 </p>
@@ -98,9 +100,9 @@ const CustomerDashboard = () => {
                 <Button
                   className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
                   onClick={() => handlePlaceOrder(product._id)}
-                  disabled={orderLoading} // Optional: Prevent rapid clicks
+                 disabled={loadingProductId === product._id} // Optional: Prevent rapid clicks
                 >
-                  {orderLoading ? (
+                  {loadingProductId === product._id ? (
                     <div className="flex items-center justify-center">
                       <Loader2 className="animate-spin h-4 w-4 mr-2" />
                       Placing...

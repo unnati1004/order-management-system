@@ -1,5 +1,6 @@
 const Order = require("../models/Order");
 const { authenticate } = require("../middlewares/auth");
+const mongoose = require("mongoose"); // make sure this is at the top of your file
 const statusTransitions = {
   PENDING: ["PAID", "CANCELLED"],
   PAID: ["FULFILLED", "CANCELLED"],
@@ -39,24 +40,16 @@ module.exports = async function (fastify, opts) {
   // PUT /api/orders/:id/payment
 fastify.put("/api/orders/:id/payment", async (req, reply) => {
   const { id } = req.params;
-  console.log("backend",id);
-  
   try {
     const order = await Order.findById(id);
-    console.log("backendorder",order);
-    
     if (!order) {
       return reply.code(404).send({ error: "Order not found" });
     }
-
-    // Toggle the paymentReceived flag
     order.paymentReceived = !order.paymentReceived;
     const saved = await order.save();
-
-    // fastify.io.emit("orderPaymentToggled", { id: saved._id, paymentReceived: saved.paymentReceived }); // optional real-time event
     reply.send(saved);
   } catch (err) {
-    console.error("Failed to toggle payment status:", err.message);
+    console.error("error",err); // 🔍 This gives the full stack trace
     reply.code(500).send({ error: "Failed to toggle payment status" });
   }
 });
@@ -64,8 +57,6 @@ fastify.put("/api/orders/:id/payment", async (req, reply) => {
   fastify.put("/api/orders/:id/status", async (req, reply) => {
     const { id } = req.params;
     const { status } = req.body;
-
-    // console.log("Updating order status:", id, status);
 
     const order = await Order.findById(id);
     if (!order) return reply.code(404).send({ error: "Order not found" });
@@ -81,7 +72,6 @@ fastify.put("/api/orders/:id/payment", async (req, reply) => {
 
     try {
       const saved = await order.save(); // ✅ capture result
-      // console.log("orderroutes saved",saved);
 
       fastify.io.emit("orderStatusUpdated", { id, status });
       reply.send(saved);
