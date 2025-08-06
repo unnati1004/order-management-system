@@ -6,7 +6,7 @@ let socket = null;
 
 export const createSocket = () => {
   if (!socket || socket.disconnected) {
-    socket = io(`http://localhost:5000`, {
+    socket = io(`${VITE_API_URL}`, {
       transports: ["websocket"], // optional but recommended
     });
   }

@@ -13,6 +13,7 @@ export default function TrackOrder() {
 
     if (socket) {
       socket.on('orderStatusUpdated', ({ id, status }) => {
+        toast.info(`Order ${id} status updated to ${status}`);
         if (order && id === order._id) {
           setOrder(prev => ({ ...prev, status }));
         }
@@ -82,9 +83,10 @@ export default function TrackOrder() {
           <p className="text-gray-700"><strong>🆔 Order ID:</strong> {order._id}</p>
           <p className="text-gray-700"><strong>📌 Status:</strong> 
             <span className={`ml-2 px-2 py-1 rounded-full text-xs font-semibold ${
-              order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-              order.status === 'PAID' ? 'bg-blue-100 text-blue-800' :
-              order.status === 'FULFILLED' ? 'bg-green-100 text-green-800' :
+              order.status === 'PLACED' ? 'bg-yellow-100 text-yellow-800' :
+              order.status === 'PICKED' ? 'bg-blue-100 text-blue-800' :
+              order.status === 'SHIPPED' ? 'bg-green-100 text-green-800' :
+              order.status === 'DELIVERED' ? 'bg-green-100 text-green-800' :
               order.status === 'CANCELLED' ? 'bg-red-100 text-red-800' : ''
             }`}>
               {order.status}
