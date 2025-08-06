@@ -2,9 +2,10 @@ const Order = require("../models/Order");
 const { authenticate } = require("../middlewares/auth");
 const mongoose = require("mongoose"); // make sure this is at the top of your file
 const statusTransitions = {
-  PENDING: ["PAID", "CANCELLED"],
-  PAID: ["FULFILLED", "CANCELLED"],
-  FULFILLED: [],
+  PLACED: ["PICKED", "CANCELLED"],
+  PICKED: ["SHIPPED", "CANCELLED"],
+  SHIPPED: ["DELIVERED", "CANCELLED"],
+  DELIVERED: [],
   CANCELLED: [],
 };
 module.exports = async function (fastify, opts) {
