@@ -19,7 +19,6 @@ const jwt = require("jsonwebtoken");
 
 
 // ✅ Role-based Authorization Middleware
-
  function authorizeRoles(...roles){
   return async (req, reply) => {
     if (!roles.includes(req.user.role)) {

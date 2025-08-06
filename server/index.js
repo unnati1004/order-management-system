@@ -12,7 +12,6 @@ const orderRoutes = require("./routes/orderRoutes");
 const customerRoutes = require("./routes/customerRoutes");
 const productRoutes = require("./routes/productRoutes");
 const authRoutes = require("./routes/authRoutes");
-const { authenticate, authorizeRoles } = require("./middlewares/auth");
 
 const startServer = async () => {
   const fastify = Fastify({
