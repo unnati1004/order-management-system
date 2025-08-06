@@ -35,7 +35,7 @@ const startServer = async () => {
   // }
   const allowedOrigins = [
   'http://localhost:5173',
-  // 'https://order-management-project1.netlify.app'
+  'https://order-management-project1.netlify.app'
 ];  
 
   // ✅ Register CORS
@@ -94,7 +94,7 @@ const startServer = async () => {
 
   // Error handler
   fastify.setErrorHandler((error, request, reply) => {
-    // Sentry.captureException(error);
+    Sentry.captureException(error);
     console.error("❌ Error occurred:", error);
     
     reply.status(500).send({ message: "Something went wrong!" });
